@@ -1,0 +1,6 @@
+1.) Install postgresql. I suggest also installing pgAdmin3.
+
+2.) Install Ruby.
+    Then the following gems: sinatra, json, pg. (highly suggested: shotgun).
+    For an intro on sinatra: http://net.tutsplus.com/tutorials/ruby/singing-with-sinatra/
+
