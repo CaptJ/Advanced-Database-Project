@@ -1,3 +1,5 @@
+For my collaborators:
+
 1.) Install postgresql. I suggest also installing pgAdmin3.
 
 2.) Install Ruby.
@@ -7,3 +9,16 @@
 3.) Add a number in this README , write your name, and commit.
 
 5.) Lem Lordje Ko
+
+
+
+LICENSE
+-------
+
+Copyright 2011
+
+Permission is granted, free of charge, to copy and read the code for educational purposes, 
+but NOT to publish, sublicense, distribute, and/or sell copies of this software.
+
+The above copyright notice shall be included in all copies or substantial portions of this
+software.

@@ -1,12 +1,17 @@
 require 'sinatra'
+require 'sinatra/session'
 require 'pg'
 require 'json'
 
-enable :sessions
 
-conn = PG.connect(
+enable :sessions
+set :session_fail, '/login'
+set :session_secret, 'KniGht0fFlow3r$'
+
+
+conn = PGconn.connect(
     :host => "localhost",   :port => 5432,      :dbname => "DSConnect",
-    :user => "lem",         :password = "s"
+    :user => "lem",         :password => "s"
     )
 
 class PGresult
@@ -37,5 +42,51 @@ end
 
 
 get '/' do 
-    "Hello World" 
+    session!
+    erb :"page/home"
+end
+
+get '/login' do
+    if session?
+        redirect '/'
+    else
+        erb :"page/login"
+    end
+end
+
+post '/login' do
+    if params[:username]
+        session_start!
+        session[:username] = params[:username]
+        redirect '/'
+    else
+        redirect '/login'
+    end
+end
+
+get '/logout' do
+    session_end!
+    redirect '/'
+end
+
+get '/protected' do
+    session!
+    protected!
+    "Welcome, authenticated client"
+end
+
+helpers do
+    include Rack::Utils
+    
+    alias_method :h, :escape_html
+
+    def protected!
+        unless authorized?
+            throw :halt, [401, "You are denied access."]
+        end
+    end
+
+    def authorized?
+        session[:username] == 'lem'    
+    end
 end
