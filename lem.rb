@@ -2,17 +2,14 @@ require 'sinatra'
 require 'sinatra/session'
 require 'pg'
 require 'json'
+require 'rack-flash'
+require 'sinatra/redirect_with_flash'
 
-
-enable :sessions
-set :session_fail, '/login'
-set :session_secret, 'KniGht0fFlow3r$'
-
-
-conn = PGconn.connect(
-    :host => "localhost",   :port => 5432,      :dbname => "DSConnect",
-    :user => "lem",         :password => "s"
-    )
+#require_relative 'dbaccess'
+#conn = PGconn.connect(
+#    :host => "localhost",   :port => 5432,      :dbname => "DSConnect",
+#    :user => "lem",         :password => "s"
+#    )
 
 class PGresult
     def to_h(key_field='id')
@@ -40,6 +37,11 @@ class PGresult
      end
 end
 
+enable :sessions
+set :session_fail, '/login'
+set :session_secret, 'KniGht0fFlow3r$'
+use Rack::Flash, :sweep => true
+
 
 get '/' do 
     session!
@@ -56,9 +58,16 @@ end
 
 post '/login' do
     if params[:username]
-        session_start!
-        session[:username] = params[:username]
-        redirect '/'
+        #res = conn.exec("SELECT entity.login('#{params[:username]}','#{params[:password]}')")
+        if params[:username] != 'lemonkoala' or params[:password] != 'w2e5'
+            flash[:error] = 'Username or password invalid'
+            redirect '/login'
+        else
+            session_start!
+            session[:user_id] = 7
+            session[:user_name] = 'Lem'
+            redirect '/'
+        end
     else
         redirect '/login'
     end
@@ -75,10 +84,36 @@ get '/protected' do
     "Welcome, authenticated client"
 end
 
+get '/events.json' do
+    [{
+        :title   =>     "This is the revenge.",
+        :thedate => { :month => 8, :day => 16, :year => 2011},
+        :isWholeDay => true,
+        :otherData => {},
+        :displayDetails => { :backgroundColor => "#456789", :foregroundColor => "#123456" }
+    },
+    {
+        :title      =>  "Indiana Jones and the Last Crusade",
+        :thedate    =>  { :month => 8, :day => 24, :year => 2011},
+        :isWholeDay =>  false,
+        :otherData  =>  { :fname => "Indiana", :lname => "Jones", :artifact => "Holy Grail" },
+        :displayDetails =>  { :backgroundColor => "#FF0000", :foregroundColor => "#FFFFFF"}
+    }].to_json
+end
+
+not_found do
+    status 404
+    "Dunno whatcha talking about"
+end
+
 helpers do
     include Rack::Utils
     
     alias_method :h, :escape_html
+
+    def partial (template, locals = {} )
+        erb template, :layout => false, :locals => locals
+    end
 
     def protected!
         unless authorized?
@@ -90,3 +125,4 @@ helpers do
         session[:username] == 'lem'    
     end
 end
+
