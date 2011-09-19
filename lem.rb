@@ -38,9 +38,9 @@ class PGresult
 end
 
 enable :sessions
-set :session_fail, '/login'
 set :session_secret, 'KniGht0fFlow3r$'
 use Rack::Flash, :sweep => true
+
 
 
 get '/' do 
