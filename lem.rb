@@ -45,7 +45,58 @@ use Rack::Flash, :sweep => true
 
 get '/' do 
     session!
-    erb :"page/home"
+	@nav_group_data = [
+		{
+			:name => 'Colleges',
+			:members => 
+				[
+					{
+						:name 	=> 'College of Arts and Sciences',
+						:active => true,
+						:link	=> '/214324'
+					},
+					{
+						:name	=> 'School of Business and Economics',
+						:active	=> false,
+						:link	=> '/3245435'
+					}
+				]
+		},
+		{
+			:name => 'Departments',
+			:members =>
+				[
+					{
+						:name	=> 'Department of Computer Science',
+						:active => true,
+						:link 	=> '/43523534'
+					},
+					{
+						:name 	=> 'Deparment of Mathematics',
+						:active => false,
+						:link	=> '/4567456'
+					}
+				]
+		},
+		{
+			:name => 'Programmes',
+			:members => 
+				[
+					{
+						:name 	=> 'BSCS',
+						:active => true,
+						:link	=> '/36534656'
+					},
+					{
+						:name 	=> 'BSIT',
+						:active => true,
+						:link	=> '/34554523'
+					}
+				]
+		}
+	];
+	
+	erb :"page/home"
 end
 
 get '/login' do
@@ -69,6 +120,7 @@ post '/login' do
             redirect '/'
         end
     else
+        flash[:error] = 'NOthing is supplied'
         redirect '/login'
     end
 end
