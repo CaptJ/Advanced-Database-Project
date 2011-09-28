@@ -1,0 +1,26 @@
+<style type="text/css">
+
+</style>
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+});
+
+</script>
+
+
+<div id="group_navigation">
+	<% @nav_group_data.each do |group_category| %>
+		
+	<ul>
+		<li> <%= group_category[:name] %>  </li>
+		
+		<% group_category[:members].each do |group| %>
+			<li> <a href="<%= group[:link] %>"> <%= group[:name] %>  </a>  </li>
+		<% end %>
+
+	</ul>
+
+	<% end %>
+</div>
