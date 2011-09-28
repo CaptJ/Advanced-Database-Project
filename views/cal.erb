@@ -1,0 +1,108 @@
+<script type="text/javascript">
+$(document).ready(function() {
+
+var jfcalplugin = $('#mycal').jFrontierCal({
+	date: new Date(),
+	dayClickCallback:       myDayClickHandler,
+	agendaClickCallback:    myAgendaClickHandler,
+	agendaDropCallback:     myAgendaDropHandler,
+	agendaDragStartCallback:	myAgendaDragStartHandler,
+	agendaDragStopCallback:		myAgendaDragStopHandler,
+	dragAndDropEnabled:     true
+}).data('plugin');
+
+function myDayClickHandler(eventObj) {
+	var date = eventObj.data.calDayDate;
+	alert("You clicked day " + date.toDateString());
+};
+
+function myAgendaClickHandler(eventObj) {
+	var agendaId = eventObj.data.agendaId;
+	var agendaItem = jfcalplugin.getAgendaItemById('#mycal', agendaId);
+};
+
+function myAgendaDropHandler(eventObj) {
+	var agendaId = eventObj.data.agendaId;
+	var date = eventObj.data.calDayDate;
+	var agendaItem = jfcalplugin.getAgendaItemById('#mycal', agendaId);
+	alert("You dropped agenda item " + agenda.title + " onto " + date.toString() + 
+		". Here is hwere you can make an AJAX call to update your database.");
+};
+
+function myAgendaDragStartHandler(eventObj, divElm, agendaItem) {
+	var title = agendaItem.title;
+	var startDate = agendaItem.startDate;
+	var endDate = agendaItem.endDate;
+	var allDay = agendaItem.allDay;
+	var data = agendaItem.data;
+};
+
+function myAgendaDragStopHandler(eventObj, divElm, agendaItem) {
+	var title = agendaItem.title;
+	var startDate = agendaItem.startDate;
+	var endDate = agendaItem.endDate;
+	var allDay = agendaItem.allDay;
+	var data = agendaItem.data;
+};
+
+$('#fret').click(function(event) {
+	event.preventDefault();
+
+	$.getJSON('/events.json', function(calEvents) {
+
+		$.each(calEvents, function(key, calEvent) {
+			jfcalplugin.addAgendaItem(
+				'#mycal',
+				calEvent.title,
+				new Date(calEvent.thedate.year, calEvent.thedate.month, 
+					calEvent.thedate.day, 0, 0, 0, 0),	
+				new Date(calEvent.thedate.year, calEvent.thedate.month, 
+					calEvent.thedate.day, 0, 0, 0, 0),	
+				calEvent.isWholeDay,
+				calEvent.otherData,
+				calEvent.displayDetails
+			);	
+		});
+
+	}).error(function(){
+		alert("Dunno what went wrong");
+	});
+});
+
+$('#spitcal').click(function(event) {
+	event.preventDefault();
+	$('#spitcalarea').html( JSON.stringify(jfcalplugin.getAllAgendaItems('#mycal'))  );
+});
+
+});
+</script>
+
+<div id="thecal">
+	<div id="mycal"></div>
+	<div class="debug">
+		<a href="/spitcalendar" id="spitcal"> Click to take a dump :) </a>
+		<div id="spitcalarea"> </div>
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
